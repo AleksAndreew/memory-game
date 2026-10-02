@@ -79,8 +79,15 @@ function OpenFace() {
       count++;
       if (count === 3) {
         Closed();
-        count = 0;
-        return;
+        count = 1;
+        setTimeout(() => {
+          card_elem.classList.add("hidden");
+          if (!open_card1) {
+            open_card1 = card_elem;
+            return;
+          }
+        }, 1000);
+        // return;
       }
       card_elem.classList.add("hidden");
 
