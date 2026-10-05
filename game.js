@@ -34,22 +34,22 @@ header.appendChild(buttons);
 const score = document.createElement("div");
 score.className = "score";
 
-const h2Moves = document.createElement("h2");
-h2Moves.append("Количество ходов: ");
+const h2_count = document.createElement("h2");
+h2_count.append("Количество ходов: ");
 const countSpan = document.createElement("span");
 countSpan.id = "count";
 countSpan.textContent = "0";
-h2Moves.appendChild(countSpan);
+h2_count.appendChild(countSpan);
 
-const h2Pairs = document.createElement("h2");
-h2Pairs.append("Открыто пар ");
+const h2_pairs = document.createElement("h2");
+h2_pairs.append("Открыто пар ");
 const pairsSpan = document.createElement("span");
 pairsSpan.id = "pairs";
 pairsSpan.textContent = "0";
-h2Pairs.appendChild(pairsSpan);
-h2Pairs.append(" из 8");
+h2_pairs.appendChild(pairsSpan);
+h2_pairs.append(" из 8");
 
-score.append(h2Moves, h2Pairs);
+score.append(h2_count, h2_pairs);
 header.appendChild(score);
 
 document.body.prepend(header);
