@@ -9,6 +9,59 @@ const images = [
   "/memory-game/src/images/w40000.jpg",
 ];
 
+const header = document.createElement("header");
+header.className = "header";
+
+const h1 = document.createElement("h1");
+h1.textContent = "Memory Game";
+header.appendChild(h1);
+
+const buttons = document.createElement("div");
+buttons.className = "buttons";
+
+const btnLeaders = document.createElement("button");
+btnLeaders.className = "header_button";
+btnLeaders.textContent = "Таблица лидеров";
+
+const btnNew = document.createElement("button");
+btnNew.className = "header_button";
+btnNew.id = "new_game";
+btnNew.textContent = "Новая игра";
+
+buttons.append(btnLeaders, btnNew);
+header.appendChild(buttons);
+
+const score = document.createElement("div");
+score.className = "score";
+
+const h2Moves = document.createElement("h2");
+h2Moves.append("Количество ходов: ");
+const countSpan = document.createElement("span");
+countSpan.id = "count";
+countSpan.textContent = "0";
+h2Moves.appendChild(countSpan);
+
+const h2Pairs = document.createElement("h2");
+h2Pairs.append("Открыто пар ");
+const pairsSpan = document.createElement("span");
+pairsSpan.id = "pairs";
+pairsSpan.textContent = "0";
+h2Pairs.appendChild(pairsSpan);
+h2Pairs.append(" из 8");
+
+score.append(h2Moves, h2Pairs);
+header.appendChild(score);
+
+document.body.prepend(header);
+
+const new_game = document.getElementById("new_game");
+const count = document.getElementById("count");
+const pairs = document.getElementById("pairs");
+let sum = 0;
+let open_pairs = 0;
+let open_card1 = null;
+let open_card2 = null;
+
 function shuffle(array) {
   const result = [...array];
 
@@ -19,8 +72,6 @@ function shuffle(array) {
 
   return result;
 }
-const images16 = shuffle(images.concat(images));
-
 function createDesk() {
   const cards = document.createElement("div");
   cards.className = "cards";
@@ -35,6 +86,7 @@ function createCards(container, images) {
     const cover = document.createElement("div");
     cover.className = "cover";
     const picture = document.createElement("img");
+    picture.alt = "game card";
     picture.src = image;
     container.appendChild(card);
     card.appendChild(cover);
@@ -43,11 +95,20 @@ function createCards(container, images) {
 }
 
 const cards = createDesk();
-createCards(cards, images16);
+createCards(cards, shuffle(images.concat(images)));
 
-const card = document.querySelectorAll(".card");
-let count = 0;
-
+function newGame() {
+  cards.replaceChildren();
+  createCards(cards, shuffle(images.concat(images)));
+  cards.classList.remove("no-events");
+  count.textContent = 0;
+  pairs.textContent = 0;
+  sum = 0;
+  open_pairs = 0;
+  open_card1 = null;
+  open_card2 = null;
+}
+new_game.addEventListener("click", newGame);
 function Compare(open_card1, open_card2) {
   if (!open_card1 || !open_card2) return;
   let open_img1 = open_card1.querySelector("img");
@@ -55,53 +116,36 @@ function Compare(open_card1, open_card2) {
   if (open_img1.src === open_img2.src) {
     open_card1.classList.add("blocked");
     open_card2.classList.add("blocked");
-    count = 0;
+    open_pairs++;
+    pairs.textContent = open_pairs;
+    cards.classList.remove("no-events");
+    sum++;
+    count.textContent = sum;
+  } else {
+    setTimeout(() => {
+      open_card1.classList.remove("hidden");
+      open_card2.classList.remove("hidden");
+      cards.classList.remove("no-events");
+      sum++;
+      count.textContent = sum;
+    }, 1500);
   }
 }
 
-let open_card1 = null;
-let open_card2 = null;
+cards.addEventListener("click", (e) => {
+  const cardEl = e.target.closest(".card");
+  if (!cardEl) return;
+  if (cardEl.classList.contains("hidden")) return;
+  if (cardEl.classList.contains("blocked")) return;
+  cardEl.classList.add("hidden");
+  if (!open_card1) {
+    open_card1 = cardEl;
+    return;
+  }
 
-function Closed() {
-  card.forEach((card_elem) => {
-    if (
-      card_elem.classList.contains("hidden") &&
-      !card_elem.classList.contains("blocked")
-    ) {
-      card_elem.classList.remove("hidden");
-    }
-  });
-}
-
-function OpenFace() {
-  card.forEach((card_elem) => {
-    card_elem.addEventListener("click", () => {
-      count++;
-      if (count === 3) {
-        Closed();
-        count = 1;
-        setTimeout(() => {
-          card_elem.classList.add("hidden");
-          if (!open_card1) {
-            open_card1 = card_elem;
-            return;
-          }
-        }, 1000);
-        // return;
-      }
-      card_elem.classList.add("hidden");
-
-      if (!open_card1) {
-        open_card1 = card_elem;
-        return;
-      }
-      open_card2 = card_elem;
-      Compare(open_card1, open_card2);
-
-      open_card1 = null;
-      open_card2 = null;
-    });
-  });
-}
-
-OpenFace();
+  open_card2 = cardEl;
+  cards.classList.add("no-events");
+  Compare(open_card1, open_card2);
+  open_card1 = null;
+  open_card2 = null;
+});
