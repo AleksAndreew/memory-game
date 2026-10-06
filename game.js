@@ -108,7 +108,51 @@ function newGame() {
   open_card1 = null;
   open_card2 = null;
 }
+
 new_game.addEventListener("click", newGame);
+
+function modalWindow() {
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.id = "modal";
+
+  const overlay = document.createElement("div");
+  overlay.className = "modal__overlay";
+
+  const content = document.createElement("div");
+  content.className = "modal__content";
+
+  const title = document.createElement("h2");
+  title.textContent = "Поздравляем! Вы победили";
+
+  const movesLine = document.createElement("h2");
+  movesLine.textContent = "Количество ходов: " + sum;
+
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "header_button";
+  closeBtn.textContent = "Закрыть";
+  closeBtn.addEventListener("click", () => {
+    closeModal();
+  });
+
+  const newGameBtn = document.createElement("button");
+  newGameBtn.className = "header_button";
+  newGameBtn.id = "new_game1";
+  newGameBtn.textContent = "Новая игра";
+  newGameBtn.addEventListener("click", () => {
+    closeModal();
+    newGame();
+  });
+
+  content.append(title, movesLine, closeBtn, newGameBtn);
+  modal.append(overlay, content);
+  document.body.appendChild(modal);
+}
+
+function closeModal() {
+  document.getElementById("modal").remove();
+}
+
 function Compare(open_card1, open_card2) {
   if (!open_card1 || !open_card2) return;
   let open_img1 = open_card1.querySelector("img");
@@ -121,6 +165,9 @@ function Compare(open_card1, open_card2) {
     cards.classList.remove("no-events");
     sum++;
     count.textContent = sum;
+    if (open_pairs === 8) {
+      modalWindow();
+    }
   } else {
     setTimeout(() => {
       open_card1.classList.remove("hidden");
