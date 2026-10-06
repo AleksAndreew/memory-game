@@ -21,6 +21,7 @@ buttons.className = "buttons";
 
 const btnLeaders = document.createElement("button");
 btnLeaders.className = "header_button";
+btnLeaders.id = "leaders";
 btnLeaders.textContent = "Таблица лидеров";
 
 const btnNew = document.createElement("button");
@@ -55,6 +56,7 @@ header.appendChild(score);
 document.body.prepend(header);
 
 const new_game = document.getElementById("new_game");
+const leaders = document.getElementById("leaders");
 const count = document.getElementById("count");
 const pairs = document.getElementById("pairs");
 let sum = 0;
@@ -110,6 +112,7 @@ function newGame() {
 }
 
 new_game.addEventListener("click", newGame);
+leaders.addEventListener("click", showLeaders);
 
 function modalWindow() {
   const modal = document.createElement("div");
@@ -167,6 +170,7 @@ function Compare(open_card1, open_card2) {
     count.textContent = sum;
     if (open_pairs === 8) {
       modalWindow();
+      addChampion(sum);
     }
   } else {
     setTimeout(() => {
@@ -177,6 +181,12 @@ function Compare(open_card1, open_card2) {
       count.textContent = sum;
     }, 1500);
   }
+}
+
+function addChampion(score) {
+  const champions = JSON.parse(localStorage.getItem("champions") || "[]");
+  champions.push({ score, date: Date.now() });
+  localStorage.setItem("champions", JSON.stringify(champions));
 }
 
 cards.addEventListener("click", (e) => {
@@ -196,3 +206,41 @@ cards.addEventListener("click", (e) => {
   open_card1 = null;
   open_card2 = null;
 });
+
+function showLeaders() {
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.id = "modal";
+
+  const overlay = document.createElement("div");
+  overlay.className = "modal__overlay";
+
+  const content = document.createElement("div");
+  content.className = "modal__content";
+
+  const title = document.createElement("h2");
+  title.textContent = "Лучшие результаты";
+
+  const leaders = document.createElement("ol");
+  leaders.id = "leadersList";
+
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "header_button";
+  closeBtn.textContent = "Закрыть";
+  closeBtn.addEventListener("click", () => {
+    closeModal();
+  });
+
+  content.append(title, leaders, closeBtn);
+  modal.append(overlay, content);
+  document.body.appendChild(modal);
+
+  const champions = JSON.parse(localStorage.getItem("champions") || "[]");
+  champions.sort((a, b) => a.score - b.score || a.date - b.date);
+  const list = document.getElementById("leadersList");
+  champions.forEach((champion) => {
+    const point = document.createElement("li");
+    point.textContent = `${champion.score}: ${new Date(champion.date).toLocaleString()}`;
+    list.appendChild(point);
+  });
+}
