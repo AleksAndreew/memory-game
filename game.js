@@ -235,12 +235,25 @@ function showLeaders() {
   modal.append(overlay, content);
   document.body.appendChild(modal);
 
-  const champions = JSON.parse(localStorage.getItem("champions") || "[]");
-  champions.sort((a, b) => a.score - b.score || a.date - b.date);
-  const list = document.getElementById("leadersList");
-  champions.forEach((champion) => {
-    const point = document.createElement("li");
-    point.textContent = `${champion.score}: ${new Date(champion.date).toLocaleString()}`;
-    list.appendChild(point);
-  });
+   const champions = JSON.parse(localStorage.getItem("champions") || "[]");
+
+  if (champions.length === 0) {
+    const empty = document.createElement("p");
+    empty.textContent = "Результата еще нет. Сыграйте в игру";
+    content.append(title, empty, closeBtn);
+  } else {
+    const leaders = document.createElement("ol");
+    leaders.id = "leadersList";
+
+    champions
+      .sort((a, b) => a.score - b.score || a.date - b.date)
+      .slice(0, 10)
+      .forEach((champion) => {
+        const point = document.createElement("li");
+        point.textContent = `${champion.score}: ${new Date(champion.date).toLocaleString()}`;
+        leaders.appendChild(point);
+      });
+
+    content.append(title, leaders, closeBtn);
+  }
 }
