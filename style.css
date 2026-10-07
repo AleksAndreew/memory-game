@@ -1,0 +1,116 @@
+body {
+    background-color: #e1d4c9;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px;
+    min-width: 300px;
+}
+
+h1 {
+    font-family: Inter;
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    font-style: normal;
+    font-weight: 600;
+    line-height: 105%;
+    color: #b0907a;
+    text-align: center;
+    margin: 20px auto;
+}
+
+.buttons,
+.score {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-bottom: 20px;
+}
+.header_button {
+    background-color: #e1d4c9;
+    color: #b0907a;
+    border-radius: 10px;
+    padding: 10px;
+    font-family: Inter;
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 150%;
+    cursor: pointer;
+}
+.cards {
+    gap: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    perspective: 1200px;
+}
+
+.cover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("/memory-game/src/images/space.jpg");
+    background-size: cover;
+    backface-visibility: hidden;
+    border-radius: 10px;
+}
+.card {
+    width: 15%;
+    cursor: pointer;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1.5s ease;
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transform: rotateY(180deg);
+    backface-visibility: hidden;
+    border-radius: 10px;
+}
+
+.hidden {
+    transform: rotateY(180deg);
+}
+
+.blocked,
+.no-events {
+    pointer-events: none;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    pointer-events: none;
+}
+
+.modal__content {
+    background-color: #e1d4c9;
+    position: relative;
+    padding: 24px 32px;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 280px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    z-index: 1;
+}
+
+.modal__content h2 {
+    margin: 0 0 12px;
+}
+
+.modal__content button {
+    margin: 6px 4px 0;
+}
